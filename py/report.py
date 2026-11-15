@@ -1,3 +1,4 @@
+# 旧版通用匿名化的 HTML 报告；学生工具的中文位置报告由 js/services/report.js 生成。
 import csv as csv_module
 import hashlib
 import html
@@ -10,6 +11,7 @@ from config import columns_for_file
 from engine import unsupported_format_message
 
 
+# 按文件格式统计每列是否处理、已处理的不同值数量和未处理的样本。
 def collect_column_stats(source_path, file_pattern, config, max_examples=3):
     """One pass over the file. For columns declared in the config
     (`touched`) it records how many distinct non-empty values there were --
@@ -26,6 +28,7 @@ def collect_column_stats(source_path, file_pattern, config, max_examples=3):
     raise ValueError(unsupported_format_message(source_path))
 
 
+# 为某列建立空统计记录，并标注这列是否在处理计划内。
 def _new_column_stat(name, plan):
     return {
         "name": name,
@@ -36,6 +39,7 @@ def _new_column_stat(name, plan):
     }
 
 
+# 把本次读到的值记入这一列统计，同时限制样本数量。
 def _record(stat, value, max_examples):
     if value is None or value == "":
         return
@@ -45,6 +49,7 @@ def _record(stat, value, max_examples):
         stat["examples"].append(value)
 
 
+# 将收集阶段的集合等内部结构整理成可传递的统计结果。
 def _finalize(stats_by_index):
     result = {}
     for stat in stats_by_index.values():
@@ -55,6 +60,7 @@ def _finalize(stats_by_index):
     return result
 
 
+# 按工作表和列读取 Excel，收集报告需要的统计。
 def _collect_xlsx(source_path, file_pattern, config, max_examples):
     plan_by_sheet = columns_for_file(config, file_pattern)
     wb = openpyxl.load_workbook(source_path, read_only=True, data_only=True)
@@ -80,6 +86,7 @@ def _collect_xlsx(source_path, file_pattern, config, max_examples):
     return sheets, row_count
 
 
+# 逐行读取 CSV/TSV，收集报告需要的统计。
 def _collect_csv(source_path, file_pattern, config, max_examples):
     # file_pattern, not source_path -- same reason as in masker.py:
     # source_path is the worker's temp path, while the CSV pseudo sheet name
@@ -103,6 +110,7 @@ def _collect_csv(source_path, file_pattern, config, max_examples):
     return {sheet_name: _finalize(stats_by_index)}, row_count
 
 
+# 汇总所有文件的统计与配置，形成旧版报告的数据结构。
 def build_report(files_stats, files_row_counts, config, mapping):
     """files_stats: {file_name: {sheet: {column: {...}}}} -- the output of
     `collect_column_stats` for every file in the run.
@@ -149,6 +157,7 @@ def build_report(files_stats, files_row_counts, config, mapping):
     }
 
 
+# 把报告数据排成 HTML；显示数据时转义特殊字符，避免原文被当作网页代码。
 def render_report_html(report):
     e = html.escape
     untouched_rows = "".join(

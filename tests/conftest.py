@@ -1,3 +1,4 @@
+# 测试的公共环境：运行测试时禁止建立网络连接，验证文件处理不依赖外网。
 import socket
 import sys
 from pathlib import Path

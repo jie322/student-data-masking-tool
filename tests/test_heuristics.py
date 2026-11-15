@@ -1,3 +1,4 @@
+# 检查旧版内容建议能否区分数字、日期、电话、邮箱和混合文字。
 from datetime import date
 
 from heuristics import guess_column, guess_shape

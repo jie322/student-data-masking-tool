@@ -1,0 +1,36 @@
+[
+  {
+    "数据集": "香港小学公开资料（2026，简体中文）",
+    "处理摘要": {
+      "input_rows": 502,
+      "output_rows": 502,
+      "anomaly_rows": 0,
+      "skipped_rows": 0,
+      "masked_cells": 3011,
+      "residual_cells": 0,
+      "formula_cells": 0
+    },
+    "位置记录": []
+  },
+  {
+    "数据集": "新加坡教育部学校公开资料",
+    "处理摘要": {
+      "input_rows": 337,
+      "output_rows": 337,
+      "anomaly_rows": 0,
+      "skipped_rows": 0,
+      "masked_cells": 2016,
+      "residual_cells": 0,
+      "formula_cells": 1
+    },
+    "位置记录": [
+      {
+        "sheet": "数据表1",
+        "row": 194,
+        "column": 3,
+        "code": "formula",
+        "reason": "公式文本已转为普通文本"
+      }
+    ]
+  }
+]

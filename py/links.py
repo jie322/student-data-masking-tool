@@ -1,10 +1,13 @@
+# 旧版跨表关联建议：检查两列是否可能是同一类信息；不会自动认定或直接修改表格。
 OVERLAP_THRESHOLD = 0.95
 
 
+# 比较文件、工作表和列位置，避免把一列与自身配对。
 def _same_column(a, b):
     return a["file"] == b["file"] and a["sheet"] == b["sheet"] and a["column"] == b["column"]
 
 
+# 计算两组值的包含程度，例如较小的一组是否大部分也在另一组里。
 def _containment(set_a, set_b):
     """Share of set_a's values that also occur in set_b. design.md §8:
     "if 95% of column A's distinct values occur in column B"."""
@@ -13,6 +16,7 @@ def _containment(set_a, set_b):
     return len(set_a & set_b) / len(set_a)
 
 
+# 按已声明的信息类别或样本值重合情况，列出建议关联的列对和原因。
 def propose_links(columns):
     """columns: [{file, sheet, column, entity, values}, ...] -- the columns
     ticked for masking (§4), with their distinct values taken from the

@@ -1,3 +1,4 @@
+# 检查旧版统计和 HTML 报告，包括特殊字符的安全显示。
 import openpyxl
 
 from mapping import new_mapping, update_entity

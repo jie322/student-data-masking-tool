@@ -1,3 +1,4 @@
+# 旧版通用表格读取和内容分析模块；当前学生界面读取表格使用 student_tool/readers.py。
 import csv
 import datetime
 from pathlib import Path
@@ -7,6 +8,7 @@ import openpyxl
 from heuristics import guess_column
 
 
+# 读取 Excel 组件版本，便于确认测试环境和浏览器内版本一致。
 def engine_version():
     return openpyxl.__version__
 
@@ -14,6 +16,7 @@ def engine_version():
 SUPPORTED_INPUT_FORMATS = (".xlsx", ".csv", ".tsv")
 
 
+# 按文件格式返回说明，旧版 .xls 需先转换为 .xlsx。
 def unsupported_format_message(path):
     """What the client sees when the engine cannot read the file they picked.
 
@@ -35,6 +38,7 @@ def unsupported_format_message(path):
     )
 
 
+# 把日期等值转成能通过 JSON 传回页面的形式。
 def _json_safe_value(value):
     """Coerce a cell value to a type that survives the Pyodide -> JS
     boundary (structured clone via postMessage). Without this a
@@ -48,6 +52,7 @@ def _json_safe_value(value):
     return str(value)
 
 
+# 固定一行的末尾空白单元格表示，避免导出时列宽度意外缩短。
 def anchor_trailing_none(row):
     """`openpyxl.Workbook(write_only=True)` silently truncates a row when
     its last cell is `None` (verified empirically: adjacent `None`s are
@@ -63,6 +68,7 @@ def anchor_trailing_none(row):
     return row
 
 
+# 按扩展名选择读取方式，取得有限行数的原始样本。
 def preview_file(path, file_pattern=None, max_rows=5):
     """Every sheet of a workbook is its own table (design.md §5). For
     CSV/TSV, which have no sheets, the single table is named after the file
@@ -82,6 +88,7 @@ def preview_file(path, file_pattern=None, max_rows=5):
     raise ValueError(unsupported_format_message(path))
 
 
+# 分别读取 Excel 中各工作表的表头和前几行。
 def _preview_xlsx(path, max_rows):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     sheets = {}
@@ -100,6 +107,7 @@ def _preview_xlsx(path, max_rows):
     return {"sheets": sheets}
 
 
+# 读取 CSV 或 TSV 的表头与前几行，原文不做替换。
 def _preview_csv(path, file_pattern, max_rows):
     sheet_name = Path(file_pattern or path).stem
     delimiter = "\t" if path.lower().endswith(".tsv") else ","
@@ -114,6 +122,7 @@ def _preview_csv(path, file_pattern, max_rows):
     return {"sheets": {sheet_name: {"columns": columns, "rows": rows}}}
 
 
+# 只收集指定列中的不同值，供旧版代号映射使用，并限制最大数量。
 def extract_unique_values(path, sheet_columns, file_pattern=None, max_unique=100_000):
     """Streaming projection (design.md §9.2): one pass over the file,
     keeping only the distinct values of the requested columns -- not every
@@ -135,6 +144,7 @@ def extract_unique_values(path, sheet_columns, file_pattern=None, max_unique=100
     raise ValueError(unsupported_format_message(path))
 
 
+# 逐行读取 Excel，只收集请求的工作表与列。
 def _extract_unique_xlsx(path, sheet_columns, max_unique):
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     result = {}
@@ -177,6 +187,7 @@ def _extract_unique_xlsx(path, sheet_columns, max_unique):
     return result
 
 
+# 逐行读取文本表格，只收集指定列，避免保存不需要的整行。
 def _extract_unique_csv(path, sheet_columns, file_pattern, max_unique):
     sheet_name = Path(file_pattern or path).stem
     wanted = sheet_columns.get(sheet_name)
@@ -212,6 +223,7 @@ def _extract_unique_csv(path, sheet_columns, file_pattern, max_unique):
     }
 
 
+# 取得样本后根据内容提出字段建议；这是旧接口，区别于学生工具按表头推荐。
 def analyze_file(path, file_pattern=None, sample_size=50, preview_rows=5):
     """Level 0 (design.md §7): a preview for the UI plus a per-column guess,
     computed separately for each sheet (design.md §5).

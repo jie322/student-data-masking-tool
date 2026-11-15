@@ -1,3 +1,4 @@
+# 旧版按映射替换原值的实现；当前学生字段的部分遮盖算法位于 student_tool/masking.py。
 import re
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from mapping import format_token
 from mapping import token_for as mapping_token_for
 
 
+# 在一个值中找到规则指定的片段，只记录待替换片段的位置。
 def _regex_match_span(value_str, pattern):
     """Returns (captured_text, start, end) for group 1, or None when there
     is no match. config.py already guarantees exactly one group during
@@ -20,6 +22,7 @@ def _regex_match_span(value_str, pattern):
     return m.group(1), m.start(1), m.end(1)
 
 
+# 按已有映射替换单个值；支持只替换正则表达式提取的部分。
 def mask_scalar(value, entity_name, extract_regex, mapping):
     """A single cell value. `entity_name=None` means the column was not
     mapped, so leave it alone (invariant: untouched columns pass through
@@ -45,6 +48,7 @@ def mask_scalar(value, entity_name, extract_regex, mapping):
     return token if token is not None else value
 
 
+# 把映射中已知原文组成查找规则，长文字优先，避免先替换它的短片段。
 def build_free_text_pattern(mapping):
     """One compiled regex alternation covering every known value of every
     entity -- design.md §10: "we look for occurrences of values already
@@ -65,12 +69,14 @@ def build_free_text_pattern(mapping):
     return pattern, value_to_token
 
 
+# 在一段文字中查找已知原文并换成代号，其余部分保留。
 def mask_free_text(text, pattern, value_to_token):
     if pattern is None or not isinstance(text, str) or not text:
         return text
     return pattern.sub(lambda m: value_to_token[m.group(0)], text)
 
 
+# 根据列处理计划替换一整行，再返回处理后数据和替换计数。
 def mask_row(row, column_plan_by_index, mapping, free_text_pattern, value_to_token):
     """column_plan_by_index: {column_index: {"entity":..., "extract_regex":...}}."""
     result = []
@@ -85,6 +91,7 @@ def mask_row(row, column_plan_by_index, mapping, free_text_pattern, value_to_tok
     return result
 
 
+# 把按列名配置的计划转成实际列位置，方便逐行使用。
 def _column_plan_by_index(header_row, sheet_plan_by_name):
     plan = {}
     for i, name in enumerate(header_row):
@@ -94,6 +101,7 @@ def _column_plan_by_index(header_row, sheet_plan_by_name):
     return plan
 
 
+# 根据文件类型选用 Excel 或 CSV 处理流程，并返回统计。
 def mask_file(source_path, output_path, file_pattern, config, mapping):
     """Reads `source_path` and writes the masked copy to `output_path` in
     the same format. `config`: an AnonConfig dict (`config.py`).
@@ -107,6 +115,7 @@ def mask_file(source_path, output_path, file_pattern, config, mapping):
     raise ValueError(unsupported_format_message(source_path))
 
 
+# 逐工作表读取和替换，再写出新的 Excel 文件。
 def _mask_xlsx(source_path, output_path, file_pattern, config, mapping):
     plan_by_sheet = columns_for_file(config, file_pattern)
     free_text_pattern, value_to_token = build_free_text_pattern(mapping)
@@ -136,6 +145,7 @@ def _mask_xlsx(source_path, output_path, file_pattern, config, mapping):
     return {"cells_masked": cells_masked}
 
 
+# 逐行读取并替换 CSV/TSV，再写出新的文本表格。
 def _mask_csv(source_path, output_path, file_pattern, config, mapping):
     # file_pattern -- the original file name, not source_path (the worker's
     # temp path, which carries a stage-specific prefix) -- otherwise the CSV

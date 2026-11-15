@@ -1,128 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- 阅读说明：HTML 决定页面有哪些区域；class 指定外观，id 供 JavaScript 找到某个按钮或容器。 -->
+<html lang="zh-CN" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'; worker-src 'self';">
-<title>Anonymizer — pseudonymize Excel &amp; CSV files in your browser</title>
-<meta name="description" content="Replace sensitive values in Excel and CSV files with tokens, entirely in your browser. No upload, no backend, no third-party requests. Open source, Apache-2.0.">
-<link rel="canonical" href="https://anonymizer.alsok.org/">
-<link rel="icon" href="static/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="static/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="static/favicon-16.png">
-<link rel="apple-touch-icon" href="static/apple-touch-icon.png">
-<meta property="og:title" content="Anonymizer — pseudonymize Excel &amp; CSV files in your browser">
-<meta property="og:description" content="Replace sensitive values in Excel and CSV files with tokens, entirely in your browser. No upload, no backend, no third-party requests.">
-<meta property="og:url" content="https://anonymizer.alsok.org/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Anonymizer — pseudonymize Excel &amp; CSV files in your browser">
-<meta name="twitter:description" content="Replace sensitive values in Excel and CSV files with tokens, entirely in your browser. No upload, no backend, no third-party requests.">
-<link rel="stylesheet" href="css/main.css">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Anonymizer",
-  "url": "https://anonymizer.alsok.org/",
-  "applicationCategory": "BrowserApplication",
-  "operatingSystem": "Any",
-  "description": "Replace sensitive values in Excel and CSV files with tokens, entirely in the browser. No upload, no backend, no third-party requests.",
-  "license": "https://github.com/Alvsok/anonymizer/blob/main/LICENSE",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  }
-}
-</script>
+  <!-- 页面文字采用 UTF-8，保证中文显示；viewport 帮助页面适应窗口宽度。 -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 浏览器内容策略限制资源来源；表格处理用的 Worker 另有自己的资源限制。 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; connect-src 'self'; worker-src 'self';">
+  <title>学生信息表 · 批量脱敏与安全导出</title>
+  <meta name="description" content="在本机批量处理学生信息表，配置手机号、邮箱和身份标识脱敏规则，预览并校验后导出。">
+  <link rel="icon" href="static/favicon.ico">
+  <!-- 先读取主题偏好再绘制页面，具体切换行为在 theme.js。 -->
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <h1>Anonymizer</h1>
+  <!-- 顶部区域：程序名称、本机处理提示和明暗主题切换按钮。 -->
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">学</span><div><strong>学生信息表脱敏工具</strong><span>批量处理与安全导出</span></div></div>
+    <div class="topbar-actions"><span class="local-tag">本机处理 · 原文件只读</span><button id="themeToggle" class="theme-toggle" type="button" aria-label="切换到亮色模式" aria-pressed="true">切换亮色</button></div>
+  </header>
+  <main>
+    <!-- 初始化状态和进度由后台引擎回信更新，未就绪时导入按钮不可用。 -->
+    <div class="page-heading"><div><h1>为学生数据分享做好准备</h1><p>配置需要隐藏的信息，核对处理结果，再导出新文件。</p></div><div id="status" class="status loading" role="status">正在启动处理引擎……</div></div>
+    <progress id="loadProgress" aria-label="引擎加载进度"></progress>
+    <ol class="steps" aria-label="操作步骤"><li><b>1</b> 导入学生信息表</li><li><b>2</b> 配置字段规则</li><li><b>3</b> 核对并安全导出</li></ol>
+    <!-- 公共提示容器：hidden 表示暂时不显示，有提示时由 feedback.js 展开。 -->
+    <div id="message" class="message" role="alert" hidden></div>
 
-  <div class="promise">
-    Your files are processed entirely in this tab. Nothing is sent to a
-    server — this page makes no request to any third-party domain (check
-    it yourself in the Network tab of your browser's developer tools).
-    Once the engine has loaded you can disconnect from the internet and
-    confirm that processing still works.
-  </div>
+    <!-- 第 1 区：选择表格、列出文件、按需展示原始样本；操作入口在 main.js。 -->
+    <section class="panel import-panel" aria-labelledby="importTitle">
+      <div class="section-heading"><div><h2 id="importTitle">导入表格</h2><p>支持 CSV、TSV、Excel（.xlsx），可一次选择多个文件。单个文件不超过 25 MB、10 万行。</p></div><button id="clearBtn" class="quiet" disabled>清空本次任务</button></div>
+      <div class="import-actions"><label class="button primary file-picker" for="fileInput">选择表格（可多选）</label><input type="file" id="fileInput" accept=".xlsx,.csv,.tsv" multiple disabled aria-label="选择学生信息表"><button id="sampleBtn" disabled>导入学生信息表</button><button id="edgeBtn" class="quiet" disabled>导入异常校验表</button></div>
+      <div id="fileList" class="file-list"><p class="empty">尚未导入表格。请选择文件，或导入项目中的学生信息表。</p></div>
+      <p class="privacy-note">文件内容只在当前浏览器内处理。导出会创建新文件；运行日志只记录数量与状态。</p>
+      <details id="sourceDetails"><summary>查看原始数据样本（仅当前页面显示）</summary><div id="sourcePreview" class="preview-stack"><p class="empty">导入后可在此核对前 5 行原始数据。</p></div></details>
+    </section>
 
-  <div class="disclaimer">
-    We never receive names, addresses, emails, phone numbers, counterparty
-    names or account numbers — we hold no lookup dictionary, we do not ask
-    for one and we do not accept one. Names become tokens; amounts and
-    dates are left exactly as they are, because the analyst has to be able
-    to work with them. That makes this pseudonymization rather than
-    anonymization: someone who already holds the same records from another
-    source could match on those numbers and undo it. For handing a working
-    file to an analyst without handing over the names, that is the trade
-    you want.
-  </div>
+    <!-- 第 2 区：配置字段和异常策略。表格内容由 js/ui/rules.js 根据读入列名创建。 -->
+    <section class="panel" aria-labelledby="rulesTitle">
+      <div class="section-heading"><div><h2 id="rulesTitle">配置脱敏规则</h2><p>同名列共用一条规则。自动推荐后仍可调整；未识别的列默认保留，请核对字段类型。</p></div><button id="resetRulesBtn" class="quiet" disabled>恢复推荐规则</button></div>
+      <div class="table-scroll"><table class="rules-table"><thead><tr><th>字段名称</th><th>字段类型</th><th>处理方式</th><th>保留前 / 后位数</th><th>其他设置</th></tr></thead><tbody id="rulesBody"><tr><td colspan="5" class="empty">导入表格后，系统会根据中文列名推荐字段规则。</td></tr></tbody></table></div>
+      <div class="policy-row"><label for="anomalyPolicy">遇到异常行时</label><select id="anomalyPolicy"><option value="mask">隐藏异常字段，保留其余内容</option><option value="skip">跳过整行，在报告中记录位置</option><option value="stop">停止导出，先修正异常</option></select><span>列数不一致的行始终隔离，避免字段错位。</span></div>
+      <p class="rule-note">手机号统一使用 +86，身份证号统一为 18 位。使用 * 遮盖，如 +86 139****0001、l***@***、李**；学号、校园卡号默认保留前 4 位。</p>
+      <div class="run-actions"><button id="processBtn" class="primary" disabled>开始批量脱敏</button><span id="runHint">请先导入表格并检查规则。</span></div>
+      <progress id="processProgress" value="0" max="1" hidden aria-label="批量处理进度"></progress>
+    </section>
 
-  <div id="status" class="status loading">Loading the Python engine…</div>
-  <progress id="loadProgress" class="load-progress"></progress>
+    <!-- 第 3 区：预览、统计、异常位置和下载。预览按钮不生成文件，完整处理通过才显示结果包。 -->
+    <section class="panel" aria-labelledby="resultTitle">
+      <div class="section-heading"><div><h2 id="resultTitle">结果预览与导出</h2><p>批量处理前，可按当前规则预览每张表前 10 行的脱敏效果。预览不生成导出文件；完整处理并检查通过后可下载结果。</p></div><button id="previewBtn" disabled>预览脱敏效果</button></div>
+      <div id="resultSummary" class="empty" aria-live="polite">导入表格并配置规则后，点击“预览脱敏效果”查看处理后的数据样式。</div>
+      <!-- 这是结果表格的放置位置；rows 不直接写在 HTML 中，而是处理后动态生成。 -->
+      <div id="resultPreview" class="preview-stack"></div>
+      <div id="issues"></div>
+      <div id="downloads" class="download-actions" hidden><a id="exportLink" class="button primary" download="学生信息_脱敏结果.zip">下载脱敏结果包</a><a id="reportLink" class="button" download="学生信息_处理报告.json">下载处理报告</a><span>结果包仅含脱敏表格和不含原文的报告。</span></div>
+    </section>
 
-  <div id="log">Initializing…</div>
-
-  <p>
-    <input type="file" id="fileInput" accept=".xlsx,.csv,.tsv" disabled>
-  </p>
-  <div id="preview"></div>
-
-  <div id="run" hidden>
-    <h2>Mask it</h2>
-    <p class="todo">
-      Tick the columns to hide, then press the button. Each column is
-      masked under its own name, so the same value gets the same token in
-      every column that carries that name — including columns with that
-      name on other sheets of the workbook.
-    </p>
-    <div class="warning">
-      You get two files. <code>masked.zip</code> is the one you send to
-      your analyst. <code>mapping.KEEP-PRIVATE.secretmap</code> is the key
-      — it maps tokens back to your real values, so anyone holding it can
-      undo the masking. Keep it. Never send it, and never put it in the
-      same archive as the masked file. Lose it and the next run will
-      produce different tokens.
-    </div>
-    <button id="maskBtn">Mask the file</button>
-    <progress id="maskProgress" class="mask-progress" value="0" max="1" hidden></progress>
-    <div id="maskOutput"></div>
-    <p>
-      <a id="maskedZipDownload" download="masked.zip" hidden>Download masked.zip — send this one</a>
-    </p>
-    <p>
-      <a id="mappingDownload" download="mapping.KEEP-PRIVATE.secretmap" hidden>Download the key — keep this one</a>
-    </p>
-  </div>
-
-  <div class="disclaimer">
-    Excel formulas are read as their current values, not as formulas.
-    After <code>restore</code> you get static numbers rather than a
-    recalculating workbook — if the formulas matter for your later work,
-    keep the original file separately.
-  </div>
-
-  <footer class="site-footer">
-    Open source under
-    <a href="https://github.com/Alvsok/anonymizer/blob/main/LICENSE">Apache-2.0</a>.
-    This page runs the code published at
-    <a href="https://github.com/Alvsok/anonymizer">github.com/Alvsok/anonymizer</a>,
-    release
-    <a href="https://github.com/Alvsok/anonymizer/releases/tag/v1.0.0-beta">v1.0.0-beta</a>.
-    Don't want to trust a hosted copy? Read the source or
-    <a href="https://github.com/Alvsok/anonymizer#running-it-locally">run it yourself</a>.
-    Found a problem, or have a suggestion?
-    <a href="https://github.com/Alvsok/anonymizer/issues/new">Open an issue</a>
-    or write to <a href="mailto:alsok@alsok.org">alsok@alsok.org</a>.
-  </footer>
-
-  <!-- Vendored (not a CDN, design.md §9.1), UMD build -- a classic script,
-       not a module, so it sets the global window.JSZip before main.js runs.
-       Version 3.10.1; the file's sha256 and the package's sha1 were checked
-       against the npm registry when it was added (same approach as the
-       .whl files). -->
+    <!-- 日志只放状态和数量；原始样本与脱敏预览分别显示在上方专门区域。 -->
+    <details class="log-panel" open><summary>运行日志 <span>不记录文件名和敏感原文</span></summary><pre id="log" aria-live="polite">正在初始化本地环境……
+</pre></details>
+    <footer><p>面向学生信息表的批量脱敏与安全导出工具设计与实现</p></footer>
+  </main>
+  <!-- 本地 JSZip 负责把脱敏表格与报告装成 ZIP；main.js 负责绑定页面操作。 -->
   <script src="vendor/jszip/jszip-3.10.1.min.js"></script>
   <script type="module" src="js/main.js"></script>
 </body>

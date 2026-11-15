@@ -1,0 +1,200 @@
+{
+  "检查日期": "2026-11-09",
+  "发现": [],
+  "样本处理": [
+    {
+      "文件": "students_100.csv",
+      "策略": "mask",
+      "汇总": {
+        "input_rows": 100,
+        "output_rows": 100,
+        "anomaly_rows": 0,
+        "skipped_rows": 0,
+        "masked_cells": 900,
+        "residual_cells": 0,
+        "formula_cells": 0
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_100.csv",
+      "策略": "skip",
+      "汇总": {
+        "input_rows": 100,
+        "output_rows": 100,
+        "anomaly_rows": 0,
+        "skipped_rows": 0,
+        "masked_cells": 900,
+        "residual_cells": 0,
+        "formula_cells": 0
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_100.csv",
+      "策略": "stop",
+      "汇总": {
+        "input_rows": 100,
+        "output_rows": 100,
+        "anomaly_rows": 0,
+        "skipped_rows": 0,
+        "masked_cells": 900,
+        "residual_cells": 0,
+        "formula_cells": 0
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_100.xlsx",
+      "策略": "mask",
+      "汇总": {
+        "input_rows": 100,
+        "output_rows": 100,
+        "anomaly_rows": 0,
+        "skipped_rows": 0,
+        "masked_cells": 900,
+        "residual_cells": 0,
+        "formula_cells": 0
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_100.xlsx",
+      "策略": "skip",
+      "汇总": {
+        "input_rows": 100,
+        "output_rows": 100,
+        "anomaly_rows": 0,
+        "skipped_rows": 0,
+        "masked_cells": 900,
+        "residual_cells": 0,
+        "formula_cells": 0
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_100.xlsx",
+      "策略": "stop",
+      "汇总": {
+        "input_rows": 100,
+        "output_rows": 100,
+        "anomaly_rows": 0,
+        "skipped_rows": 0,
+        "masked_cells": 900,
+        "residual_cells": 0,
+        "formula_cells": 0
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_edge_cases.csv",
+      "策略": "mask",
+      "汇总": {
+        "input_rows": 12,
+        "output_rows": 11,
+        "anomaly_rows": 8,
+        "skipped_rows": 1,
+        "masked_cells": 93,
+        "residual_cells": 0,
+        "formula_cells": 1
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_edge_cases.csv",
+      "策略": "skip",
+      "汇总": {
+        "input_rows": 12,
+        "output_rows": 4,
+        "anomaly_rows": 8,
+        "skipped_rows": 8,
+        "masked_cells": 33,
+        "residual_cells": 0,
+        "formula_cells": 1
+      },
+      "阻止导出": false
+    },
+    {
+      "文件": "students_edge_cases.csv",
+      "策略": "stop",
+      "汇总": {
+        "input_rows": 12,
+        "output_rows": 11,
+        "anomaly_rows": 8,
+        "skipped_rows": 1,
+        "masked_cells": 93,
+        "residual_cells": 0,
+        "formula_cells": 1
+      },
+      "阻止导出": true
+    }
+  ],
+  "公开导入表": [
+    {
+      "文件": "01_香港学校公开联系方式.csv",
+      "行数": 502,
+      "列数": 8,
+      "推荐非保留规则数": 2
+    },
+    {
+      "文件": "02_新加坡学校公开联系方式.csv",
+      "行数": 337,
+      "列数": 8,
+      "推荐非保留规则数": 2
+    },
+    {
+      "文件": "03_学生数学成绩.csv",
+      "行数": 395,
+      "列数": 33,
+      "推荐非保留规则数": 0
+    },
+    {
+      "文件": "04_学生葡语成绩.csv",
+      "行数": 649,
+      "列数": 33,
+      "推荐非保留规则数": 0
+    },
+    {
+      "文件": "05_学生学籍与学业结果.csv",
+      "行数": 4424,
+      "列数": 37,
+      "推荐非保留规则数": 0
+    },
+    {
+      "文件": "06_学生学习行为.csv",
+      "行数": 25818,
+      "列数": 21,
+      "推荐非保留规则数": 0
+    }
+  ],
+  "两种学生表与交付副本": "内容一致，源文件未修改",
+  "人工核对清单": {
+    "条目数": 12,
+    "自动比较": "12 项一致",
+    "人工结论分布": {
+      "待人工核对": 12
+    }
+  },
+  "公开数据": {
+    "来源数": 5,
+    "导入表数": 6,
+    "文件数": 25,
+    "总字节数": 9904399,
+    "最大文件字节数": 3741591,
+    "原件哈希": "5 项一致",
+    "联系方式结果": "两份与当前引擎一致"
+  },
+  "资源清单": {
+    "浏览器加载Python源码": 16,
+    "应用JavaScript模块": 20,
+    "缓存资源": 44,
+    "路径检查": "通过"
+  },
+  "现有EXE": {
+    "文件": "学生信息脱敏工具.exe",
+    "字节数": 19897813,
+    "SHA256": "ab01cacd05352e8255a28b4120a0b657bc9c42b311f52c952416843f1ee1c33c",
+    "最后修改时间": "2026-10-31T18:27:31.383586+08:00"
+  },
+  "检查状态": "通过"
+}

@@ -1,5 +1,26 @@
-__pycache__/
-*.pyc
-.DS_Store
+# 本机环境与缓存
 .venv/
+.build-venv/
+__pycache__/
+*.py[cod]
 .pytest_cache/
+.DS_Store
+Thumbs.db
+
+# 构建产物
+/build/
+/dist/
+*.spec
+*.exe
+
+# 保留已有验证依据，后续运行记录不自动提交
+/output/*
+!/output/project-review-20261109/
+
+# 本机配置与凭据
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+~$*

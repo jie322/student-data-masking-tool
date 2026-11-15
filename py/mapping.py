@@ -1,20 +1,25 @@
+# 旧版“原文与代号对照表”模块；当前学生界面使用星号遮盖，不生成可恢复映射。
 import json
 import random
 import secrets
 
 
+# 表示映射文件格式不符合要求，便于上层捕获并提示。
 class MappingError(ValueError):
     pass
 
 
+# 生成随机种子；同一映射内用它保持后续编号分配可重复。
 def new_seed():
     return secrets.token_hex(8)
 
 
+# 按前缀和位数生成代号，例如前缀加补零的数字编号。
 def format_token(prefix, number, width):
     return f"{prefix}-{number:0{width}d}"
 
 
+# 为新原文分配尚未占用的编号，保持已有原文与编号的关系不变。
 def assign_tokens(existing_values, new_values, seed):
     """existing_values: {value: number}, tokens already assigned for this
     entity. new_values: values not in there yet (this function filters out
@@ -48,10 +53,12 @@ def assign_tokens(existing_values, new_values, seed):
     return values
 
 
+# 创建一份空映射，包含版本、随机种子和信息类别列表。
 def new_mapping():
     return {"version": 1, "seed": new_seed(), "entities": {}}
 
 
+# 给某一类信息追加新值，保留这类信息此前已经分配的编号。
 def update_entity(mapping, entity_name, prefix, width, new_values):
     """Add new values to an entity, creating it if it does not exist yet.
     Mutates and returns `mapping` so calls can be chained."""
@@ -64,6 +71,7 @@ def update_entity(mapping, entity_name, prefix, width, new_values):
     return mapping
 
 
+# 查找某个原值对应的代号；映射中不存在时返回 None。
 def token_for(mapping, entity_name, value):
     entity = mapping["entities"].get(entity_name)
     if not entity or value not in entity["values"]:
@@ -71,6 +79,7 @@ def token_for(mapping, entity_name, value):
     return format_token(entity["prefix"], entity["values"][value], entity["width"])
 
 
+# 合并配置涉及的多份文件和多列，同一类原值共享一套代号。
 def build_mapping(config, values_by_column, existing_mapping=None):
     """config: an AnonConfig dict (`config.py`) -- entities: {name:
     {prefix, width, columns: [{file_pattern, sheet_name, column_name}]}}.
@@ -95,6 +104,7 @@ def build_mapping(config, values_by_column, existing_mapping=None):
     return mapping
 
 
+# 把保存的 JSON 文字读成映射，并检查必要结构。
 def mapping_from_json(text):
     try:
         data = json.loads(text)
@@ -105,5 +115,6 @@ def mapping_from_json(text):
     return data
 
 
+# 把映射转成 JSON 文字供保存；映射含原文，不能混进脱敏结果包。
 def mapping_to_json(mapping):
     return json.dumps(mapping, ensure_ascii=False, indent=2)

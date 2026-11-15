@@ -1,3 +1,4 @@
+# 检查旧版配置的默认值、重复前缀、正则提取规则和 JSON 读写。
 import pytest
 
 from config import AnonConfig, ColumnSelector, ConfigError, config_from_json, config_to_json

@@ -1,3 +1,4 @@
+# 检查跨列关联建议的类别依据、值重合程度和同一列去重。
 from links import propose_links
 
 

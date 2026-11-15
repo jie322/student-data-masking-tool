@@ -1,3 +1,4 @@
+# 检查旧版流程的整体要求，例如重复运行、跨文件一致性和数值保留。
 """Acceptance criteria (design.md §11) -- gathered in one place.
 
 This does not duplicate coverage that already exists; it points at it and

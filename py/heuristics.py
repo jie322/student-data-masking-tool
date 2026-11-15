@@ -1,3 +1,4 @@
+# 旧版按单元格内容提出字段建议的模块；建议需人工确认，不等于准确识别。学生工具的表头别名匹配位于 student_tool/rules.py。
 import re
 from datetime import date, datetime
 
@@ -42,6 +43,7 @@ DATE_STR_RE = re.compile(
 )
 
 
+# 判断一个值是否可以解释成普通数值，避免把成绩等字段误当成文字。
 def _is_numeric(value):
     if isinstance(value, bool):
         return False
@@ -50,12 +52,14 @@ def _is_numeric(value):
     return isinstance(value, str) and bool(NUMERIC_STR_RE.match(value.strip()))
 
 
+# 判断一个值是否为日期或常见日期写法。
 def _is_date(value):
     if isinstance(value, (date, datetime)):
         return True
     return isinstance(value, str) and bool(DATE_STR_RE.match(value.strip()))
 
 
+# 查看一列样本，提出数值、日期、邮箱、电话或普通文字等外形分类。
 def guess_shape(sample_values):
     """Classify a column's values as numeric/date/email/phone/text/empty.
 
@@ -77,6 +81,7 @@ def guess_shape(sample_values):
     return "text"
 
 
+# 在外形分类基础上提出是否处理的建议，并给出建议原因供用户确认。
 def guess_column(sample_values):
     """Guess for a single column -- level 0 (design.md §7), from the values
     alone; the heading is deliberately not examined.

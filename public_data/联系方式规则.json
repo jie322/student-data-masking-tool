@@ -1,0 +1,66 @@
+{
+  "学校名称": {
+    "type": "identifier",
+    "mode": "full",
+    "prefix": 4,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  },
+  "校长姓名": {
+    "type": "name",
+    "mode": "mask",
+    "prefix": 1,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  },
+  "办公电话": {
+    "type": "text",
+    "mode": "mask",
+    "prefix": 2,
+    "suffix": 2,
+    "keep_domain": false,
+    "required": false
+  },
+  "邮箱": {
+    "type": "email",
+    "mode": "mask",
+    "prefix": 1,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  },
+  "地址": {
+    "type": "address",
+    "mode": "full",
+    "prefix": 0,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  },
+  "传真号码": {
+    "type": "text",
+    "mode": "full",
+    "prefix": 0,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  },
+  "地区": {
+    "type": "other",
+    "mode": "keep",
+    "prefix": 0,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  },
+  "学校网址": {
+    "type": "other",
+    "mode": "keep",
+    "prefix": 0,
+    "suffix": 0,
+    "keep_domain": false,
+    "required": false
+  }
+}

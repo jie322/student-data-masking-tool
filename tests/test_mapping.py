@@ -1,3 +1,4 @@
+# 检查旧版代号分配的稳定性、追加映射和跨文件一致性。
 import pytest
 
 from mapping import (

@@ -1,3 +1,4 @@
+# 检查旧版代号恢复和文件格式处理；不代表学生界面提供恢复功能。
 import openpyxl
 
 from mapping import new_mapping, token_for, update_entity

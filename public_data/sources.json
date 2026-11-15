@@ -1,0 +1,102 @@
+[
+  {
+    "id": "hk_primary",
+    "name": "香港小学公开资料（2026，简体中文）",
+    "file": "hk_primary_2026_sc.csv",
+    "url": "https://www.chsc.hk/datagovhk/psp_2026_sc.csv",
+    "page": "https://data.gov.hk/sc-data/dataset/chsc-chsc-primary-school-profiles/resource/e224100f-daee-43ac-bcf4-89b8a75928d7",
+    "license": "DATA.GOV.HK 使用条款及家庭与学校合作事宜委员会的知识产权声明",
+    "kind": "公开学校机构及负责人办公联系资料，不是学生个人档案",
+    "imports": [
+      {
+        "path": "imports/01_香港学校公开联系方式.csv",
+        "rows": 502,
+        "columns": 8
+      }
+    ],
+    "downloaded_on": "2026-10-31",
+    "bytes": 3741591,
+    "sha256": "a3b45f14a33a176e9538012047c34038f353b77ef6291b05a71b7dd205dbdba4"
+  },
+  {
+    "id": "sg_schools",
+    "name": "新加坡教育部学校公开资料",
+    "file": "sg_schools_api.json",
+    "url": "https://data.gov.sg/api/action/datastore_search?resource_id=d_688b934f82c1059ed0a6993d2a829089&limit=1000",
+    "page": "https://data.gov.sg/datasets/d_688b934f82c1059ed0a6993d2a829089/view",
+    "license": "Singapore Open Data Licence（https://data.gov.sg/open-data-licence）",
+    "kind": "公开学校机构及负责人办公联系资料，原件为官方 API 返回的 JSON",
+    "imports": [
+      {
+        "path": "imports/02_新加坡学校公开联系方式.csv",
+        "rows": 337,
+        "columns": 8
+      }
+    ],
+    "downloaded_on": "2026-10-31",
+    "bytes": 312278,
+    "sha256": "6f1804eae7930abfaeac19d47bdf283a345d2a9dffdab1a1d2eefa8390d0b8f0"
+  },
+  {
+    "id": "uci_320",
+    "name": "UCI 葡萄牙中学生成绩",
+    "file": "uci_student_performance.zip",
+    "url": "https://archive.ics.uci.edu/static/public/320/student+performance.zip",
+    "page": "https://archive.ics.uci.edu/dataset/320/student+performance",
+    "license": "CC BY 4.0；Cortez, P. (2008), DOI: 10.24432/C5TG7T",
+    "kind": "真实学校报告与问卷数据，已匿名化；不含姓名、电话、邮箱和身份证号",
+    "imports": [
+      {
+        "path": "imports\\03_学生数学成绩.csv",
+        "rows": 395,
+        "columns": 33
+      },
+      {
+        "path": "imports\\04_学生葡语成绩.csv",
+        "rows": 649,
+        "columns": 33
+      }
+    ],
+    "downloaded_on": "2026-10-31",
+    "bytes": 40735,
+    "sha256": "82ae9d66437b9808df42e8c89d2bb179c46e9cfbcf06f38abc1d20b3b747e177"
+  },
+  {
+    "id": "uci_697",
+    "name": "UCI 大学生学籍与学业结果",
+    "file": "uci_student_dropout.zip",
+    "url": "https://archive.ics.uci.edu/static/public/697/predict+students+dropout+and+academic+success.zip",
+    "page": "https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success",
+    "license": "CC BY 4.0；Realinho et al.，DOI: 10.24432/C5MC89",
+    "kind": "真实高等教育机构的学生数据，已匿名化；不含完整身份或联系信息",
+    "imports": [
+      {
+        "path": "imports\\05_学生学籍与学业结果.csv",
+        "rows": 4424,
+        "columns": 37
+      }
+    ],
+    "downloaded_on": "2026-10-31",
+    "bytes": 533344,
+    "sha256": "e90e55fd65ec462ae283ebeb2cca409319e3460ed898d8754f62fb35cc83a65d"
+  },
+  {
+    "id": "oulad",
+    "name": "OULAD 学生学习行为研究子集",
+    "file": "oulad_subset.csv",
+    "url": "https://zenodo.org/records/4264397/files/OULAD_subset_Casalino_et_al.csv?download=1",
+    "page": "https://zenodo.org/records/4264397",
+    "license": "CC BY 4.0；Casalino, Castellano & Vessio，DOI: 10.5281/zenodo.4264397",
+    "kind": "来自真实开放大学学习记录的研究者整理子集，分类值已数字编码；没有直接身份信息",
+    "imports": [
+      {
+        "path": "imports\\06_学生学习行为.csv",
+        "rows": 25818,
+        "columns": 21
+      }
+    ],
+    "downloaded_on": "2026-10-31",
+    "bytes": 1827752,
+    "sha256": "f895d43ca8038fa0b47bfa70254ae5d735848a82cf54fb299a93436a98395939"
+  }
+]
